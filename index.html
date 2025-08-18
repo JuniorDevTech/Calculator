@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Calculator solutions</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Calculator</h1>
+    </div>
+    <div class="calculatrice">
+      <input type="text" id="inputElment" readonly />
+
+      <div class="buttons">
+        <div class="topRow">
+          <button class="bot" id="clear">Clear</button>
+          <button class="bot" id="delete">DEL</button>
+        </div>
+
+        <div class="topRow">
+          <button class="btn number">1</button>
+          <button class="btn number">2</button>
+          <button class="btn number">3</button>
+          <button class="btn operator" data-op="*">x</button>
+        </div>
+        <div class="topRow">
+          <button class="btn number">4</button>
+          <button class="btn number">5</button>
+          <button class="btn number">6</button>
+          <button class="btn operator" data-op="-">-</button>
+        </div>
+
+        <div class="topRow">
+          <button class="btn number">7</button>
+          <button class="btn number">8</button>
+          <button class="btn number">9</button>
+          <button class="btn operator" data-op="+">+</button>
+        </div>
+        <div class="topRow">
+          <button class="btn number">0</button>
+          <button class="btn number">.</button>
+          <button class="btn operator" data-op="/">/</button>
+          <button class="btn" id="equals">=</button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
