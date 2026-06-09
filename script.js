@@ -1,73 +1,152 @@
-const inputElment = document.getElementById("inputElment");
+const inputElement = document.getElementById("inputElment");
+
 const clearElement = document.getElementById("clear");
-const buttonOperator = document.querySelectorAll(".operator");
-const buttonNumber = document.querySelectorAll(".number");
-const equalsElement = document.getElementById("equals");
 const deleteElement = document.getElementById("delete");
+const equalsElement = document.getElementById("equals");
 
-let num1 = "";
-let operator = null;
-let waitingForNum2 = false;
+const buttonNumbers = document.querySelectorAll(".number");
+const buttonOperators = document.querySelectorAll(".operator");
 
-//pour les boutons
+let firstNumber = "";
+let operator = "";
+let waitingForSecondNumber = false;
 
-buttonNumber.forEach((button) => {
+/* =========================
+   NUMBERS
+========================= */
+
+buttonNumbers.forEach((button) => {
   button.addEventListener("click", () => {
-    if (waitingForNum2) {
-      inputElment.value = "";
-      waitingForNum2 = false;
-    }
-    inputElment.value += button.textContent;
+    appendNumber(button.textContent);
   });
 });
 
-//operator
+function appendNumber(value) {
+  if (waitingForSecondNumber) {
+    inputElement.value = "";
+    waitingForSecondNumber = false;
+  }
 
-buttonOperator.forEach((button) => {
+  inputElement.value += value;
+}
+
+/* =========================
+   OPERATORS
+========================= */
+
+buttonOperators.forEach((button) => {
   button.addEventListener("click", () => {
-    if (inputElment.value == "") return;
-    num1 = inputElment.value;
+    if (inputElement.value === "") return;
+
+    firstNumber = inputElement.value;
     operator = button.dataset.op;
-    waitingForNum2 = true;
+
+    waitingForSecondNumber = true;
   });
 });
 
-equalsElement.addEventListener("click", () => {
-  if (num1 == "" || operator == null || inputElment.value == "") return;
+/* =========================
+   EQUALS
+========================= */
 
-  let num2 = inputElment.value;
-  let resultat;
+equalsElement.addEventListener("click", calculate);
+
+function calculate() {
+  if (firstNumber === "" || operator === "" || inputElement.value === "") {
+    return;
+  }
+
+  const secondNumber = inputElement.value;
+
+  let result;
 
   switch (operator) {
     case "+":
-      resultat = parseFloat(num1) + parseFloat(num2);
+      result = parseFloat(firstNumber) + parseFloat(secondNumber);
       break;
+
     case "-":
-      resultat = parseFloat(num1) - parseFloat(num2);
+      result = parseFloat(firstNumber) - parseFloat(secondNumber);
       break;
+
     case "*":
-      resultat = parseFloat(num1) * parseFloat(num2);
+      result = parseFloat(firstNumber) * parseFloat(secondNumber);
       break;
+
     case "/":
-      resultat =
-        parseFloat(num2) === 0 ? "erreur" : parseFloat(num1) / parseFloat(num2);
+      if (parseFloat(secondNumber) === 0) {
+        inputElement.value = "Erreur";
+        resetCalculator();
+        return;
+      }
+
+      result = parseFloat(firstNumber) / parseFloat(secondNumber);
       break;
 
     default:
       return;
   }
-  inputElment.value = resultat;
-  num1 = "";
-  operator = null;
-  waitingForNum2 = false;
-});
+
+  result = Number(result.toFixed(8));
+
+  inputElement.value = result;
+
+  firstNumber = result;
+  waitingForSecondNumber = true;
+}
+
+/* =========================
+   CLEAR
+========================= */
 
 clearElement.addEventListener("click", () => {
-  num1 = "";
-  operator = null;
-  waitingForNum2 = false;
-  inputElment.value = "";
+  inputElement.value = "";
+  resetCalculator();
 });
+
+function resetCalculator() {
+  firstNumber = "";
+  operator = "";
+  waitingForSecondNumber = false;
+}
+
+/* =========================
+   DELETE
+========================= */
+
 deleteElement.addEventListener("click", () => {
-  inputElment.value = inputElment.value.slice(0, -1);
+  inputElement.value = inputElement.value.slice(0, -1);
+});
+
+/* =========================
+   KEYBOARD SUPPORT
+========================= */
+
+document.addEventListener("keydown", (event) => {
+  const key = event.key;
+
+  if (!isNaN(key) || key === ".") {
+    appendNumber(key);
+  }
+
+  if (["+", "-", "*", "/"].includes(key)) {
+    if (inputElement.value === "") return;
+
+    firstNumber = inputElement.value;
+    operator = key;
+    waitingForSecondNumber = true;
+  }
+
+  if (key === "Enter" || key === "=") {
+    calculate();
+  }
+
+  if (key === "Backspace") {
+    inputElement.value = inputElement.value.slice(0, -1);
+  }
+
+  if (key === "Escape") {
+    inputElement.value = "";
+    resetCalculator();
+  }
 });
